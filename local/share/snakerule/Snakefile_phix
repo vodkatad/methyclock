@@ -1,0 +1,47 @@
+include: "./conf.sk"
+rule nreads:
+    output: "n_reads.tsv"
+    params: dir=FQ_DIR
+    shell:
+        """
+            for f in {params.dir}/*fastq.gz; do zcat $f | wc -l | bawk -vN=$f '{{print N,$1/4}}'; done > {output}
+        """
+
+rule align:
+    input: fastq1=FQ_DIR+'/{sample}_R1_001.fastq.gz', 
+           fastq2=FQ_DIR+'/{sample}_R1_001.fastq.gz'
+    params: index=PHIX, cores=CORES
+    output: "{sample}.bam"
+    shell:
+        """
+            bwa mem -t {params.cores} {params.index} {input} | samtools view -Shb -o {output}
+        """
+
+rule flagstat:
+    input: '{sample}.bam' 
+    output: "{sample}.flagstat"
+    shell:
+        """
+            samtools flagstat {input} > {output}
+        """
+
+rule all_phix_align:
+    input: expand('{sample}.flagstat', sample=SAMPLES)
+    output: "all_phix.tsv"
+    shell:
+        """
+            for f in {input}; do grep -m 1 mapped $f | tr -s " " "\\t" | cut -f 1 | bawk -vN=$f '{{print N,$1}}'; done > {output}
+        """
+
+rule join_info:
+    input: phix="all_phix.tsv", reads="n_reads.tsv"
+    output: "info.tsv"
+    params: pre="(org_xeno|xeno_livermet)"
+    shell:
+        """
+            join -t$'\\t' <(sed 's/\.flagstat//1' {input.phix} | sort -k1,1) \\
+            <(sed 's/\.fastq\.gz//1' {input.reads} | sed -E 's/^.+\/{params.pre}/\\1/1' | sed -E 's/^.+Undetermined/Undetermined/1'  | sort -k1,1) > {output}
+        """
+
+rule clean:
+    shell: "rm -rf *bam"

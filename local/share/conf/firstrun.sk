@@ -17,7 +17,7 @@ SRC_DIR=PRJ_ROOT+"/local/src"
 
 #PHIX=PRJ_ROOT+'/local/share/data/phix/phiX'
 PHIX='/mnt/trcanmed/snaketree/prj/cellecta_barcode/local/share/data/phix/phiX'
-FQ_DIR=PRJ_ROOT+"/local/share/data/220706_M02679_0327_000000000-GD2G4/Data/Intensities/BaseCalls/"
+FQ_DIR=PRJ_ROOT+"/local/share/data/220706_M02679_0327_000000000-GD2G4/Data/Intensities/BaseCalls"
 #SAMPLES_ORIG=["322_A","322_B","322_E","322_F","322_G","322_H","322_I","322_J","322_K","322_L"]
 
 #SAMPLES=["basale_1","basale_2","basale_3","vitro_1", "vitro_2","vitro_3","topo_1", "topo_3","topo_4","topo_5"]

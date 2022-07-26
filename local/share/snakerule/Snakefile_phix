@@ -9,7 +9,7 @@ rule nreads:
 
 rule align:
     input: fastq1=FQ_DIR+'/{sample}_R1_001.fastq.gz', 
-           fastq2=FQ_DIR+'/{sample}_R1_001.fastq.gz'
+           fastq2=FQ_DIR+'/{sample}_R2_001.fastq.gz'
     params: index=PHIX, cores=CORES
     output: "{sample}.bam"
     shell:
